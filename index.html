@@ -1,4 +1,4 @@
-  <!doctype html>
+<!doctype html>
 <html lang="fr" dir="ltr">
 <head>
 <meta charset="utf-8">
@@ -25,10 +25,11 @@
   :focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
   .wrap { max-width: 520px; margin-inline: auto; padding: 0 16px; position: relative; }
 
-  /* Background: two soft glows in the brand colours */
-/* Background: two soft glows in the brand colours, drifting */
-  .glow { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--night); }
-  .glow::before, .glow::after { content: ""; position: absolute; width: 90vmax; height: 90vmax; border-radius: 50%; filter: blur(40px); will-change: transform; }
+  /* Background: two soft glows in the brand colours, drifting.
+     No blur filter: the radial gradients are already soft, and blurring two screen-sized layers on every frame
+     is what made phones lag. Only transform moves, so the phone's graphics chip does the work. */
+  .glow { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--night); contain: strict; }
+  .glow::before, .glow::after { content: ""; position: absolute; width: 90vmax; height: 90vmax; border-radius: 50%; will-change: transform; backface-visibility: hidden; }
   .glow::before { top: -45vmax; right: -35vmax; background: radial-gradient(circle, rgba(123,92,255,.38), transparent 65%); animation: drift-a 18s ease-in-out infinite alternate; }
   .glow::after  { top: -10vmax; left: -45vmax;  background: radial-gradient(circle, rgba(255,106,61,.26), transparent 65%); animation: drift-b 22s ease-in-out infinite alternate; }
   @keyframes drift-a { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(-25vw,30vh) scale(1.15); } 100% { transform: translate(-10vw,55vh) scale(.95); } }
@@ -50,6 +51,14 @@
   .links { display: grid; gap: 10px; margin-top: 14px; }
   .link { display: flex; align-items: center; gap: 14px; min-height: 66px; padding: 10px 14px; border-radius: 18px; background: rgba(20,26,46,.9); border: 1px solid var(--line); transition: transform .2s, border-color .2s; }
   .link:hover { transform: translateY(-2px); border-color: rgba(255,106,61,.5); }
+  /* The agency website: first, in the brand gradient */
+  .link.site { position: relative; min-height: 74px; background: linear-gradient(120deg, var(--violet), var(--orange)); border-color: transparent; box-shadow: 0 16px 34px -16px rgba(255,106,61,.85); }
+  .link.site:hover { border-color: transparent; }
+  .link.site .ic { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.55); }
+  .link.site .tx b { font-size: 17px; }
+  .link.site .tx small { color: rgba(255,255,255,.88); }
+  .link.site .go { color: #fff; }
+  .link.site .new { position: absolute; top: -9px; inset-inline-end: 14px; padding: 3px 9px; border-radius: 999px; background: #fff; color: var(--night); font: 800 11px/1.2 var(--body); letter-spacing: .02em; box-shadow: 0 6px 14px -6px rgba(0,0,0,.6); }
   .ic { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--night-3); border: 1.5px solid rgba(255,106,61,.55); }
   .ic svg { width: 22px; height: 22px; }
   .tx { flex: 1; min-width: 0; }
@@ -97,6 +106,11 @@
 
 
   <main class="links">
+    <a class="link site" id="siteLink" href="https://oranova-agency.com/" target="_blank" rel="noopener">
+      <span class="new" data-i="siteNew">Nouveau</span>
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+      <span class="tx"><b data-i="site">Notre site web</b><small dir="ltr">oranova-agency.com</small></span><svg class="go" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
     <a class="link" id="waLink" href="#" target="_blank" rel="noopener">
       <span class="ic"><svg viewBox="0 0 24 24" fill="#FF6A3D"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg></span>
       <span class="tx"><b>WhatsApp</b><small data-i="waSub">Écrivez-nous</small></span><svg class="go" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -145,14 +159,14 @@ const PHONE_INTL = "213" + PHONE.slice(1);
 const PHONE_PRETTY = PHONE.replace(/^(\d{4})(\d{2})(\d{2})(\d{2})$/, "$1 $2 $3 $4");
 
 const T = {
-  fr: { tag: "Agence digitale · Oran, Algérie", p1: "Sites web", p2: "Applications", p3: "Logiciels PC", cta: "Démo gratuite sur WhatsApp", call: "Appeler", waSub: "Écrivez-nous",
+  fr: { tag: "Agence digitale · Oran, Algérie", p1: "Sites web", p2: "Applications", p3: "Logiciels PC", cta: "Démo gratuite sur WhatsApp", call: "Appeler", waSub: "Écrivez-nous", site: "Notre site web", siteNew: "Nouveau",
         svcH: "Ce qu'on <em>fait</em>", svcS: "Pour les restaurants, commerces, agences et entreprises.",
         s1: "Sites web", s1d: "Vitrine, réservation, commande WhatsApp, FR/AR.", s2: "Applications mobiles", s2d: "Android et iPhone, sur mesure.",
         s3: "Logiciels PC", s3d: "Gestion, caisse, stock, réservations.", s4: "Menus QR & cartes NFC", s4d: "Menu digital, plaques et cartes à toucher.",
         wkH: "Nos <em>réalisations</em>", w1: "Menu digital · Oran", w2: "Site de location de voitures", w3: "Menu digital · Café",
         save: "Enregistrer le contact", share: "Partager", foot: "© 2026 Oranova · Oran, Algérie", langBtn: "عربي",
         wa: "Bonjour Oranova, j'ai un projet :", saved: "Contact téléchargé", copied: "Lien copié" },
-  ar: { tag: "وكالة رقمية · وهران، الجزائر", p1: "مواقع ويب", p2: "تطبيقات", p3: "برامج الحاسوب", cta: "عرض تجريبي مجاني على واتساب", call: "اتصل بنا", waSub: "راسلنا",
+  ar: { tag: "وكالة رقمية · وهران، الجزائر", p1: "مواقع ويب", p2: "تطبيقات", p3: "برامج الحاسوب", cta: "عرض تجريبي مجاني على واتساب", call: "اتصل بنا", waSub: "راسلنا", site: "موقعنا الإلكتروني", siteNew: "جديد",
         svcH: "ماذا <em>نصنع</em>", svcS: "للمطاعم، المحلات، الوكالات والشركات.",
         s1: "مواقع ويب", s1d: "واجهة، حجز، طلب عبر واتساب، عربي/فرنسي.", s2: "تطبيقات الهاتف", s2d: "أندرويد وآيفون، حسب الطلب.",
         s3: "برامج الحاسوب", s3d: "تسيير، صندوق، مخزون، حجوزات.", s4: "قوائم QR وبطاقات NFC", s4d: "منيو رقمي، لوحات وبطاقات باللمس.",
@@ -169,13 +183,14 @@ function apply() {
   document.querySelectorAll("[data-i]").forEach(el => { const v = t[el.dataset.i]; if (typeof v !== "string") return; el.hasAttribute("data-html") ? el.innerHTML = v : el.textContent = v; });
   document.getElementById("lang").textContent = t.langBtn;
   document.getElementById("waLink").href = "https://wa.me/" + PHONE_INTL + "?text=" + encodeURIComponent(t.wa);
+  document.getElementById("siteLink").href = lang === "ar" ? "https://oranova-agency.com/ar" : "https://oranova-agency.com/"; // the site in the same language
 }
 document.getElementById("lang").addEventListener("click", () => { lang = lang === "fr" ? "ar" : "fr"; try { localStorage.setItem("oranova-lang", lang); } catch (e) {} apply(); });
 
 const toast = (m) => { const el = document.getElementById("toast"); el.textContent = m; el.classList.add("on"); setTimeout(() => el.classList.remove("on"), 1800); };
 document.getElementById("save").addEventListener("click", () => {
   const v = ["BEGIN:VCARD", "VERSION:3.0", "FN:Oranova", "ORG:Oranova", "TITLE:Sites web, applications & logiciels", "TEL;TYPE=CELL:+" + PHONE_INTL,
-    "EMAIL:oranovaagency31@gmail.com", "URL:" + location.href, "ADR;TYPE=WORK:;;;Oran;;;Algérie",
+    "EMAIL:oranovaagency31@gmail.com", "URL:https://oranova-agency.com/", "ADR;TYPE=WORK:;;;Oran;;;Algérie",
     "X-SOCIALPROFILE;TYPE=instagram:https://www.instagram.com/oranova_agency31/", "X-SOCIALPROFILE;TYPE=tiktok:https://www.tiktok.com/@oranova_agency",
     "X-SOCIALPROFILE;TYPE=facebook:https://www.facebook.com/profile.php?id=61595991331021", "END:VCARD"].join("\r\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([v], { type: "text/vcard" })); a.download = "Oranova.vcf"; a.click(); toast(T[lang].saved);
